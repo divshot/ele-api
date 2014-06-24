@@ -4,8 +4,8 @@
   "description": "Node.js API for Ele.io",
   "main": "index.js",
   "scripts": {
-    "start":"node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node .",
+    "test": "mocha test/ --recursive --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,14 @@
     "github-oauth": "^0.1.0",
     "octokit": "^0.10.1",
     "cookie-session": "^1.0.2",
-    "morgan": "^1.1.1"
+    "winston": "^0.7.3",
+    "winston-papertrail": "^0.1.4",
+    "passport": "^0.2.0",
+    "passport-github": "^0.1.5"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.20.1",
+    "supertest": "^0.13.0"
   }
 }

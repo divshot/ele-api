@@ -1,37 +1,25 @@
 require('dotenv').load();
 
-var Octokit = require('octokit');
-
+var logger = require('./lib/logger');
+var PORT = process.env['PORT'] || 3000;
 var express = require('express');
-var morgan  = require('morgan')
-var session = require('cookie-session')
+var session = require('cookie-session');
+var passport = require('passport');
+var GitHubStrategy = require('passport-github').Strategy;
 
-var app = express();
+var app = module.exports = express();
 app.use(session({
   secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2'
 }));
-app.use(morgan());
+app.use(logger.network());
 
 var auth = require('./lib/auth')(app);
 
-auth.on('error', function(err, res) {
-  console.error('there was a login error', err);
-  res.send(err);
+app.get('/', auth.authorize(), function (req, res) {
+  res.send(req.user);
 });
 
-auth.on('token', function(token, res) {
-  var gh = Octokit.new({token: token.access_token});
-  var user = gh.getUser().getInfo().then(function(user) {
-    res.redirect('/');
-  }, function(err) {
-    res.end(JSON.stringify(err));
-  });
+app.listen(PORT, function() {
+  logger.info('Server started. Listening on port %d', PORT);
 });
 
-app.get('/', function(req, res) {
-  res.end(JSON.stringify(req.session));
-});
-
-var server = app.listen(process.env['PORT'] || 3000, function() {
-  console.log('Listening on port %d', server.address().port);
-});
