@@ -21,8 +21,9 @@ auth.on('error', function(err) {
 auth.on('token', function(token, res) {
   var gh = Octokit.new({token: token.access_token});
   var user = gh.getUser().getInfo().then(function(user) {
-    req.session.user_id = user.id.toString(); // THIS MAKES THE WHOLE THING HANG. WHY?!?!
     res.redirect('/');
+  }, function(err) {
+    res.end(JSON.stringify(err));
   });
 });
 
