@@ -14,8 +14,9 @@ app.use(morgan());
 
 var auth = require('./lib/auth')(app);
 
-auth.on('error', function(err) {
+auth.on('error', function(err, res) {
   console.error('there was a login error', err);
+  res.send(err);
 });
 
 auth.on('token', function(token, res) {
