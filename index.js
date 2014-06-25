@@ -1,12 +1,15 @@
-require('dotenv').load();
+require('dotenv').load(); // Load local env values
+require('./lib/db'); // Connect to database
 
 var logger = require('./lib/logger');
 var PORT = process.env['PORT'] || 3000;
 var express = require('express');
 var session = require('cookie-session');
 var cors = require('cors');
+var bodyParser = require('body-parser')
 var app = module.exports = express();
 
+app.use(bodyParser.json());
 app.use(cors());
 app.use(session({
   secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2'
