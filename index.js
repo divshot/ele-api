@@ -13,6 +13,12 @@ app.use(session({
 }));
 app.use(logger.network());
 
+// Adds helpful namespace for params
+app.use(function (req, res, next) {
+  req.meta = {};
+  next();
+});
+
 var auth = require('./lib/auth')(app);
 
 // Initialize routes
