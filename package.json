@@ -38,7 +38,8 @@
     "shortid": "^2.0.1",
     "body-parser": "^1.4.3",
     "lodash": "^2.4.1",
-    "semver": "^2.3.1"
+    "semver": "^2.3.1",
+    "is": "^0.3.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
