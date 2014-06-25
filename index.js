@@ -14,7 +14,12 @@ app.use(cors());
 app.use(session({
   name: 'ele.user',
   secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2',
-  maxage: 1000 * 60 * 60 * 24 * 30
+  maxage: 1000 * 60 * 60 * 24 * 30,
+  cookie: {
+    // QUESTION: should we use a different value in the env variables
+    // to store this information
+    domain: process.env.WEB_ORIGIN || process.env.ORIGIN,
+  }
 }));
 app.use(logger.network());
 
