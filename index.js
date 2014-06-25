@@ -9,9 +9,8 @@ var cors = require('cors');
 var bodyParser = require('body-parser')
 var app = module.exports = express();
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
-
-app.use(bodyParser.json());
-app.use(session({
+var meta = require('./lib/middleware/meta');
+var sessionOptions = {
   name: 'ele.user',
   secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2',
   maxage: 1000 * 60 * 60 * 24 * 30,
@@ -20,18 +19,16 @@ app.use(session({
     // to store this information
     domain: process.env.WEB_ORIGIN || process.env.ORIGIN,
   }
-}));
+};
+
+app.use(bodyParser.json());
+app.use(session(sessionOptions));
 app.use(logger.network());
 app.use(cors({
   origin: process.env.WEB_ORIGIN,
   credentials: true
 }));
-
-// Adds helpful namespace for params
-app.use(function (req, res, next) {
-  req.meta = {};
-  next();
-});
+app.use(meta());
 
 var auth = require('./lib/auth')(app);
 
