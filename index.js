@@ -12,7 +12,9 @@ var app = module.exports = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(session({
-  secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2'
+  name: 'ele.user',
+  secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2',
+  maxage: 1000 * 60 * 60 * 24 * 30
 }));
 app.use(logger.network());
 
@@ -23,6 +25,8 @@ app.use(function (req, res, next) {
 });
 
 var auth = require('./lib/auth')(app);
+
+// app.use(function (req, res, next) {});
 
 // Initialize routes
 [
