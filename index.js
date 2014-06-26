@@ -2,23 +2,22 @@ require('dotenv').load(); // Load local env values
 require('./lib/db'); // Connect to database
 
 var logger = require('./lib/logger');
-var PORT = process.env['PORT'] || 3000;
 var express = require('express');
 var session = require('cookie-session');
 var cors = require('cors');
 var bodyParser = require('body-parser')
-var app = module.exports = express();
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
 var meta = require('./lib/middleware/meta');
+
+var app = module.exports = express();
+var PORT = process.env['PORT'] || 3000;
+var SESSION_NAME = 'ele.user';
+var SESSION_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days
+var SESSION_SECRET = process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2';
 var sessionOptions = {
-  name: 'ele.user',
-  secret: process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2',
-  maxage: 1000 * 60 * 60 * 24 * 30,
-  cookie: {
-    // QUESTION: should we use a different value in the env variables
-    // to store this information
-    domain: process.env.WEB_ORIGIN || process.env.ORIGIN,
-  }
+  name: SESSION_NAME,
+  secret: SESSION_SECRET,
+  maxage: SESSION_MAX_AGE
 };
 
 app.use(bodyParser.json());
