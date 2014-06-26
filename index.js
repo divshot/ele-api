@@ -37,6 +37,7 @@ app.use(setUserIfToken());
 [
   'packages',
   'user-packages',
+  'self',
   'home'
 ].forEach(function (routeName) {
   require('./lib/routes/' + routeName)({
