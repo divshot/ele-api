@@ -1,4 +1,7 @@
-require('dotenv').load(); // Load local env values
+if (process.env.NODE_ENV !== 'production') {
+  console.log('info: DEV MODE: loading environment variables');
+  require('dotenv').load(); // Load local env values
+}
 require('./lib/db'); // Connect to database
 
 var logger = require('./lib/logger');
