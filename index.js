@@ -10,10 +10,10 @@ var setUserIfToken = require('./lib/middleware/set-user-if-token');
 var meta = require('./lib/middleware/meta');
 
 var app = module.exports = express();
-var PORT = process.env['PORT'] || 3000;
+var PORT = process.env.PORT || 3000;
 var SESSION_NAME = 'ele.user';
 var SESSION_MAX_AGE = 1000 * 60 * 60 * 24 * 30; // 30 days
-var SESSION_SECRET = process.env['SESSION_SECRET'] || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2';
+var SESSION_SECRET = process.env.SESSION_SECRET || 'yEkWdTDGin2ajoCbxzuEeDOZzLVoy8BM4tH7S_R2';
 var sessionOptions = {
   name: SESSION_NAME,
   secret: SESSION_SECRET,
@@ -21,6 +21,9 @@ var sessionOptions = {
 };
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(session(sessionOptions));
 app.use(logger.network());
 app.use(cors({
