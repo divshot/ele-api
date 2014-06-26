@@ -41,6 +41,8 @@ app.use(setUserIfToken());
 [
   'packages',
   'user-packages',
+  'user-package-files',
+  'user-package-versions',
   'self',
   'home'
 ].forEach(function (routeName) {
