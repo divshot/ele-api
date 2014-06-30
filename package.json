@@ -42,13 +42,13 @@
     "lodash": "^2.4.1",
     "mime-types": "^1.0.1",
     "mongoose-findorcreate": "^0.1.2",
-    "compare-semver": "^0.1.0"
+    "compare-semver": "^0.1.0",
+    "mongoose-timestamp": "^0.2.1"
   },
   "devDependencies": {
     "chai": "^1.9.1",
     "mocha": "^1.20.1",
     "supertest": "^0.13.0",
-    "nodemon": "^1.2.0",
-    "mongoose-timestamp": "^0.2.1"
+    "nodemon": "^1.2.0"
   }
 }
