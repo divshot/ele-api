@@ -41,7 +41,8 @@
     "is": "^0.3.0",
     "lodash": "^2.4.1",
     "mime-types": "^1.0.1",
-    "mongoose-findorcreate": "^0.1.2"
+    "mongoose-findorcreate": "^0.1.2",
+    "compare-semver": "^0.1.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
