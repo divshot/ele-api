@@ -14,8 +14,6 @@ GITHUB_SECRET=          # GitHub Client Secret for your dev app
 ORIGIN=                 # API Origin (e.g. http://localhost:3000)
 WEB_ORIGIN=             # Web Origin (e.g. http://localhost:4000)
 MONGO_CONN=             # MongoDB connection url
-GITHUB_CLIENT_ID=       # Github client id
-GITHUB_CLIENT_SECRET=   # Github client secret
 ```
 
 Next, you'll need Node.js and to run `npm install`. To run the server,
