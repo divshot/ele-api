@@ -26,18 +26,21 @@ var sessionOptions = {
   maxage: SESSION_MAX_AGE
 };
 
+// Parse body
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
 app.use(session(sessionOptions));
 app.use(logger.network());
 app.use(cors({
   origin: process.env.WEB_ORIGIN,
   credentials: true
 }));
-app.use(meta());
+
+app.use(meta()); // Attach meta data to requests
 
 var auth = require('./lib/auth')(app);
 
