@@ -42,7 +42,8 @@
     "mime-types": "^1.0.1",
     "mongoose-findorcreate": "^0.1.2",
     "compare-semver": "^0.3.0",
-    "mongoose-timestamp": "^0.2.1"
+    "mongoose-timestamp": "^0.2.1",
+    "cozy-slug": "^0.2.2"
   },
   "devDependencies": {
     "chai": "^1.9.1",
