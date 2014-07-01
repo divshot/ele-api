@@ -11,7 +11,7 @@ var logger = require('./lib/logger');
 var express = require('express');
 var session = require('cookie-session');
 var cors = require('cors');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
 var context = require('./lib/middleware/context');
 

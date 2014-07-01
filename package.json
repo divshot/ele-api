@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "test": "mocha test/ --recursive --reporter spec"
+    "test": "npm run lint && mocha test/ --recursive --reporter spec",
+    "lint": "jshint index.js lib/"
   },
   "repository": {
     "type": "git",
@@ -49,6 +50,7 @@
     "chai": "^1.9.1",
     "mocha": "^1.20.1",
     "supertest": "^0.13.0",
-    "nodemon": "^1.2.0"
+    "nodemon": "^1.2.0",
+    "jshint": "^2.5.1"
   }
 }
