@@ -1,4 +1,5 @@
 .env
+/bower_components
 
 # Logs
 logs
