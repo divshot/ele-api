@@ -13,7 +13,7 @@ var session = require('cookie-session');
 var cors = require('cors');
 var bodyParser = require('body-parser')
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
-var meta = require('./lib/middleware/meta');
+var context = require('./lib/middleware/context');
 
 var app = module.exports = express();
 var PORT = process.env.PORT || 3000;
@@ -40,7 +40,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(meta()); // Attach meta data to requests
+app.use(context()); // Attach context data to requests
 
 var auth = require('./lib/auth')(app);
 
