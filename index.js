@@ -55,8 +55,7 @@ app.use(setUserIfToken());
   'user-packages',
   'user-package-files',
   'user-package-versions',
-  'self',
-  'home'
+  'self'
 ].forEach(function (routeName) {
   require('./lib/routes/' + routeName)({
     app: app,
