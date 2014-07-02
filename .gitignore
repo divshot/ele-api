@@ -28,3 +28,6 @@ build/Release
 node_modules
 
 npm-debug.*
+
+# Ignore bower packages
+/vendor

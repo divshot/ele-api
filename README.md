@@ -19,4 +19,7 @@ MONGO_CONN=             # MongoDB connection url
 Next, you'll need Node.js and to run `npm install`. To run the server,
 you can simply:
 
-    npm start
+```
+npm install && bower install
+npm start
+```
