@@ -12,6 +12,7 @@ var express = require('express');
 var session = require('cookie-session');
 var cors = require('cors');
 var bodyParser = require('body-parser');
+var boom = require('express-boom');
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
 var context = require('./lib/middleware/context');
 
@@ -33,6 +34,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.use(boom());
 app.use(session(sessionOptions));
 app.use(logger.network());
 app.use(cors({

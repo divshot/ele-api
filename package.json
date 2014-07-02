@@ -45,7 +45,8 @@
     "compare-semver": "^0.3.0",
     "mongoose-timestamp": "^0.2.1",
     "cozy-slug": "^0.2.2",
-    "yay": "^0.1.0"
+    "yay": "^0.1.0",
+    "express-boom": "^0.1.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
