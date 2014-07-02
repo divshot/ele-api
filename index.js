@@ -13,6 +13,7 @@ var session = require('cookie-session');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
+var serveVendorPackage = require('./lib/middleware/serve-vendor-package');
 var context = require('./lib/middleware/context');
 
 var app = module.exports = express();
@@ -40,6 +41,8 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(serveVendorPackage(__dirname + '/vendor'));
+// app.use('/:user/:pkg', express.static(__dirname + '/vendor'));
 app.use(context()); // Attach context data to requests
 
 var auth = require('./lib/auth')(app);
