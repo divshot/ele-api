@@ -42,7 +42,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use('/:user/:pkg', express.static(__dirname + '/vendor')); // Serve vendor pcakages
 app.use(context()); // Attach context data to requests
 
 var auth = require('./lib/auth')(app);
