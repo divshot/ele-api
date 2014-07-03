@@ -62,6 +62,11 @@ app.use(setUserIfToken());
   });
 });
 
+// Default 404 not found
+app.use(function (req, res) {
+  res.boom.notFound();
+});
+
 app.listen(PORT, function() {
   logger.info('Server started. Listening on port %d', PORT);
 });
