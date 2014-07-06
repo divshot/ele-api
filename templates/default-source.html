@@ -1,0 +1,22 @@
+<!-- 
+  Here's where you'll define your element. You can define multiple elements
+  if you want, but the package name will be taken from the first custom
+  element you define in the file.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- You can import core and paper elements -->
+<link rel="import" href="../core-ajax/core-ajax.html">
+
+<polymer-element name="{ELEMENT_NAME}" attributes="name">
+  <template>
+    Hello {{name}}
+  </template>
+  <script>
+    Polymer('{ELEMENT_NAME}', {
+      ready: function() {
+        
+      }
+    });
+  </script>
+</polymer-element>
