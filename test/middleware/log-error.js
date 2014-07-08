@@ -71,9 +71,11 @@ describe('middleware: log-error', function () {
         .get('/')
         .expect(500)
         .expect(function (data) {
-          expect(JSON.parse(data.res.text)).to.contain.key('error');
-          expect(JSON.parse(data.res.text)).to.contain.key('statusCode');
-          expect(JSON.parse(data.res.text)).to.contain.key('message');
+          var r = JSON.parse(data.res.text);
+          
+          expect(r).to.contain.key('error');
+          expect(r).to.contain.key('statusCode');
+          expect(r).to.contain.key('message');
         })
         .end(done);
     });
