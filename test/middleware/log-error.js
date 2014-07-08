@@ -18,7 +18,10 @@ describe('middleware: log-error', function () {
       var output = {logs: []};
       
       app
-        .use(logError({output: output}))
+        .use(logError({
+          logger: logger,
+          output: output
+        }))
         .use(function (req, res, next) {
           req.logError(new Error('error'));
           next();
@@ -40,7 +43,10 @@ describe('middleware: log-error', function () {
       var called = false;
       
       app
-        .use(logError({testMode: true}))
+        .use(logError({
+          testMode: true,
+          logger: logger
+        }))
         .use(function (req, res, next) {
           req.logError = function () {
             called = true;
@@ -58,7 +64,10 @@ describe('middleware: log-error', function () {
     
     it('responds with the error', function (done) {
       app
-        .use(logError({testMode: true}))
+        .use(logError({
+          testMode: true,
+          logger: logger
+        }))
         .use(function (req, res, next) {
           req.logError = function () {};
           res.withError(new Error('error'));

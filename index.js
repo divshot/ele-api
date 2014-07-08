@@ -40,7 +40,7 @@ app.use(bodyParser.urlencoded({
 app.use(boom());
 app.use(session(sessionOptions));
 app.use(logger.network());
-app.use(logError());
+app.use(logError({logger: logger}));
 app.use(cors({
   origin: process.env.WEB_ORIGIN,
   credentials: true
