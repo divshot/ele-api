@@ -1,19 +1,33 @@
-<!-- 
-  Here's where you'll define your element. You can define multiple elements
-  if you want, but the package name will be taken from the first custom
-  element you define in the file.
--->
 <link rel="import" href="../polymer/polymer.html">
-
 <!-- You can import core and paper elements -->
 <link rel="import" href="../core-ajax/core-ajax.html">
 
+<!-- 
+Here's where you'll define your element. You can define multiple elements
+if you want, but the package name will be taken from the first custom
+element you define in the file. You can also document your element! For
+more info, see [the docs](https://ele.io/docs).
+
+@element {ELEMENT_NAME}
+-->
 <polymer-element name="{ELEMENT_NAME}" attributes="name">
   <template>
+    <style>
+      :host {
+        font-family: sans-serif;
+      }
+    </style>
     Hello {{name}}
   </template>
   <script>
     Polymer('{ELEMENT_NAME}', {
+      /**
+       * The name of the person you want to say hello to.
+       * @attribute name
+       * @type string
+       * @default "Polymer Dev"
+       */
+      name: 'Polymer Dev',
       ready: function() {
         
       }
