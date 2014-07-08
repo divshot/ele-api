@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 require('./lib/db'); // Connect to database
 
 var logger = require('./lib/logger');
+var logError = require('./lib/middleware/log-error');
 var express = require('express');
 var session = require('cookie-session');
 var cors = require('cors');
@@ -37,6 +38,7 @@ app.use(bodyParser.urlencoded({
 app.use(boom());
 app.use(session(sessionOptions));
 app.use(logger.network());
+app.use(logError());
 app.use(cors({
   origin: process.env.WEB_ORIGIN,
   credentials: true
