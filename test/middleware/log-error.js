@@ -14,6 +14,10 @@ describe('middleware: log-error', function () {
       .use(logError());
   });
   
+  after(function () {
+    delete require.cache['../../lib/logger'];
+  });
+  
   describe('req.logError', function () {
     it('outputs error to console', function (done) {
       var output = [];
