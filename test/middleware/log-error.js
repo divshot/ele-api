@@ -10,33 +10,26 @@ describe('middleware: log-error', function () {
   
   beforeEach(function () {
     app = express()
-      .use(boom())
-      .use(logError());
-  });
-  
-  after(function () {
-    delete require.cache['../../lib/logger'];
+      .use(boom());
   });
   
   describe('req.logError', function () {
     it('outputs error to console', function (done) {
-      var output = [];
+      var output = {logs: []};
       
-      app.use(function (req, res, next) {
-        req.logError(new Error('error'));
-        next();
-      });
-      
-      logger.error = function (msg) {
-        output.push(msg);
-      };
+      app
+        .use(logError({output: output}))
+        .use(function (req, res, next) {
+          req.logError(new Error('error'));
+          next();
+        });
       
       request(app)
         .get('/error')
         .expect(function () {
-          expect(output[0]).to.equal('/error');
-          expect(output[1]).to.equal('error');
-          expect(output[2]).to.not.equal(undefined);
+          expect(output.logs[0]).to.equal('/error');
+          expect(output.logs[1]).to.equal('error');
+          expect(output.logs[2]).to.not.equal(undefined);
         })
         .end(done);
     });
@@ -46,12 +39,14 @@ describe('middleware: log-error', function () {
     it('logs the error', function (done) {
       var called = false;
       
-      app.use(function (req, res, next) {
-        req.logError = function () {
-          called = true;
-        };
-        res.withError(new Error('error'));
-      });
+      app
+        .use(logError({testMode: true}))
+        .use(function (req, res, next) {
+          req.logError = function () {
+            called = true;
+          };
+          res.withError(new Error('error'));
+        });
       
       request(app)
         .get('/')
@@ -62,10 +57,12 @@ describe('middleware: log-error', function () {
     });
     
     it('responds with the error', function (done) {
-      app.use(function (req, res, next) {
-        req.logError = function () {};
-        res.withError(new Error('error'));
-      });
+      app
+        .use(logError({testMode: true}))
+        .use(function (req, res, next) {
+          req.logError = function () {};
+          res.withError(new Error('error'));
+        });
       
       request(app)
         .get('/')

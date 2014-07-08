@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "test": "npm run lint && mocha test/ --recursive --reporter spec",
+    "test": "npm run lint && mocha test/ --recursive --reporter dot",
     "lint": "jshint index.js lib/"
   },
   "repository": {
