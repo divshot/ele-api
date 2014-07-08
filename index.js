@@ -16,6 +16,8 @@ var bodyParser = require('body-parser');
 var boom = require('express-boom');
 var setUserIfToken = require('./lib/middleware/set-user-if-token');
 var context = require('./lib/middleware/context');
+var User = require('./lib/models/user');
+var Github = require('./lib/models/github');
 
 var app = module.exports = express();
 var PORT = process.env.PORT || 3000;
@@ -48,7 +50,10 @@ app.use(context()); // Attach context data to requests
 
 var auth = require('./lib/auth')(app);
 
-app.use(setUserIfToken());
+app.use(setUserIfToken({
+  User: User,
+  Github: Github
+}));
 
 // Initialize routes
 [

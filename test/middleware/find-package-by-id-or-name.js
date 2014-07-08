@@ -23,8 +23,10 @@ describe('middleware: find-package-by-id-or-name', function () {
       app
         .use(logError({testMode: true}))
         .use(findPackageByIdOrName({
-          findByIdOrName: function (packageId, userId, done) {
-            done(new Error('error'));
+          Package: {
+            findByIdOrName: function (packageId, userId, done) {
+              done(new Error('error'));
+            }
           }
         }));
         
@@ -45,8 +47,10 @@ describe('middleware: find-package-by-id-or-name', function () {
   describe('missing package', function () {
     it('responds with not found when package is missing', function (done) {
       app.use(findPackageByIdOrName({
-        findByIdOrName: function (packageId, userId, done) {
-          done();
+        Package: {
+          findByIdOrName: function (packageId, userId, done) {
+            done();
+          }
         }
       }));
       
@@ -70,8 +74,10 @@ describe('middleware: find-package-by-id-or-name', function () {
       
       app
         .use(findPackageByIdOrName({
-          findByIdOrName: function (packageId, userId, done) {
-            done(null, {name: 'package'});
+          Package: {
+            findByIdOrName: function (packageId, userId, done) {
+              done(null, {name: 'package'});
+            }
           }
         }))
         .use(function (req, res, next) {
