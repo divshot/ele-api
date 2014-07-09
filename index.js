@@ -63,6 +63,13 @@ app.use(setUserIfToken({
   'user-package-versions',
   'self'
 ].forEach(function (routeName) {
+  
+  /*
+    
+    app.use('/', route);
+    
+   */
+  
   require('./lib/routes/' + routeName)({
     app: app,
     auth: auth
