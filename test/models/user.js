@@ -25,8 +25,12 @@ describe('model: User', function () {
       expect(User.collection.name).to.equal('users');
     });
     
-    it('removes version key', function () {
-      expect(User.schema.options.versionKey).to.equal(false);
+    it('removes version key', function (done) {
+      var user = new User({name: 'user'});
+      user.save(function () {
+        expect(user.__v).to.equal(undefined);
+        done();
+      });
     });
   });
   
@@ -40,6 +44,12 @@ describe('model: User', function () {
     before(function (done) {
       var user = new User(u);
       user.save(done);
+    });
+    
+    after(function (done) {
+      User.findOne({name: 'person'}, function (err, user) {
+        user.remove(done);
+      });
     });
     
     it('finds a user by username', function (done) {
@@ -62,9 +72,31 @@ describe('model: User', function () {
   });
   
   describe('plugin: findOrCreate', function () {
-    it('finds or creates a document', function () {
-      // FIXME: this is a stupid test
-      expect(User.findOrCreate).to.be.a('function');
+    it('finds a document', function (done) {
+      createUser(function () {
+        User.findOrCreate({github_id: '54321'}, function (err, user, created) {
+          expect(created).to.equal(false);
+          expect(user.github_id).to.equal('54321');
+          done();
+        });
+      });
+      
+      function createUser (done) {
+        var user = new User({
+          github_id: 54321
+        });
+        
+        user.save(done);
+      }
+    });
+    
+    it('creates a document if it does not find it', function (done) {
+      User.findOrCreate({github_id: '1234'}, function (err, user, created) {
+        expect(created).to.equal(true);
+        expect(user.github_id).to.equal('1234');
+        expect(user._id).to.not.equal(undefined);
+        done();
+      });
     });
   });
 });
