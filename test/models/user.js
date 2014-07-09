@@ -34,7 +34,7 @@ describe('model: User', function () {
     });
   });
   
-  describe('find by param', function () {
+  describe('.finByParam(options, callback)', function () {
     var u = {
       name: 'person',
       username: 'user1',

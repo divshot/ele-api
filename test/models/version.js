@@ -3,7 +3,7 @@ require('mockgoose')(require('mongoose'));
 var expect = require('chai').expect;
 var Version = require('../../lib/models/version');
 
-describe('model: version', function () {
+describe('model: Version', function () {
   describe('schema', function () {
     it('types', function (done) {
       var version = new Version({
@@ -37,7 +37,7 @@ describe('model: version', function () {
     });
   });
   
-  describe('isValid()', function () {
+  describe('.isValid(versionNubmer)', function () {
     it('validates a semver number', function () {
       expect(!!Version.isValid('0.2.0')).to.equal(true);
       expect(!!Version.isValid('a.b.c')).to.equal(false);
