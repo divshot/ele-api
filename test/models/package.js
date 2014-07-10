@@ -1,5 +1,6 @@
 require('mockgoose')(require('mongoose'));
 
+var _ = require('lodash');
 var expect = require('chai').expect;
 var Package = require('../../lib/models/package');
 var Github = require('../../lib/models/github');
@@ -740,12 +741,60 @@ describe('model: Package', function () {
   });
 
   describe('pre save hook', function () {
+    it('formats the file list before saving', function (done) {
+      var package = new Package({
+        files: {
+          'files.html': 'file content'
+        }
+      });
+      
+      package.save(function () {
+        expect(package.files).to.be.an('array');
+        package.remove(done);
+      });
+    });
     
+    it('ensures there is a file name for the package', function (done) {
+      var package = new Package();
+      
+      package.save(function () {
+        expect(package.name).to.not.equal(undefined);
+        package.remove(done);
+      });
+    });
+    
+    it('adds default files if no files on package', function (done) {
+      var package = new Package({
+        name: 'package'
+      });
+      
+      package.save(function () {
+        expect(package.files).to.have.length(2);
+        expect(_.pluck(package.files, 'name')).to.eql(['package.html', 'demo.html']);
+        package.remove(done);
+      });
+    });
   });
   
   describe('plugins', function () {
     describe('timestamps', function () {
+      it('adds a created_at timestamp for each new package', function (done) {
+        var package = new Package();
+        
+        package.save(function () {
+          expect(package.created_at).to.not.equal(undefined);
+          package.remove(done);
+        });
+      });
       
+      it('adds an updated_at timestamp when a package is updated', function (done) {
+        var package = new Package();
+        
+        package.save(function () {
+          expect(package.updated_at).to.not.equal(undefined);
+          package.remove(done);
+        });
+      });
     });
   });
 });
