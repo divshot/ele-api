@@ -346,15 +346,171 @@ describe('model: Package', function () {
     });
     
     describe('.getVersion(options, callback)', function () {
+      var package;
       
+      beforeEach(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123',
+          versions: [
+            {number: '0.1.0', sha: '123'},
+            {number: '0.2.0', sha: '456'}
+          ]
+        });
+        
+        package.save(done);
+      });
+      
+      afterEach(function (done) {
+        package.remove(done);
+      });
+      
+      it('gets a version from a package', function (done) {
+        Package.getVersion({
+          packageId: 'package',
+          userId: '123',
+          number: '0.1.0'
+        }, function (err, version, package) {
+          expect(version.number).to.equal('0.1.0');
+          expect(version.sha).to.equal('123');
+          done();
+        });
+      });
+      
+      it('gets the latest version from a package', function (done) {
+        Package.getVersion({
+          packageId: 'package',
+          userId: '123',
+          number: 'latest'
+        }, function (err, version, package) {
+          expect(version.number).to.equal('0.2.0');
+          expect(version.sha).to.equal('456');
+          done();
+        });
+      });
+      
+      it('returns null for a package not found', function (done) {
+        Package.getVersion({
+          packageId: 'package1',
+          userId: '123',
+          number: '0.1.0'
+        }, function (err, version, package) {
+          expect(version).to.equal(null);
+          expect(package).to.equal(null);
+          done();
+        });
+      });
     });
     
     describe('.updateByIdOrName(options, callback)', function () {
+      var package;
       
+      beforeEach(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123',
+          files: [
+            {
+              name: 'package.html',
+              content: '<package></package>'
+            }
+          ]
+        });
+        
+        package.save(done);
+      });
+      
+      afterEach(function (done) {
+        package.remove(done);
+      });
+      
+      it('updates a package', function (done) {
+        Package.updateByIdOrName({
+          packageId: 'package',
+          userId: '123',
+          data: {
+            gist_id: '456'
+          }
+        }, function (err, saved, p) {
+          expect(saved).to.equal(true);
+          expect(p.gist_id).to.equal('456');
+          done();
+        });
+      });
+      
+      it('updates the file content of the source file', function (done) {
+        Package.updateByIdOrName({
+          packageId: 'package',
+          userId: '123',
+          data: {
+            source: 'new content'
+          }
+        }, function (err, saved, p) {
+          expect(p.files[0].content).to.equal('new content');
+          done();
+        });
+      });
+      
+      it('updates the file content of the demo file', function (done) {
+        Package.updateByIdOrName({
+          packageId: 'package',
+          userId: '123',
+          data: {
+            demo: 'demo content'
+          }
+        }, function (err, saved, p) {
+          expect(p.files[1].content).to.equal('demo content');
+          done();
+        });
+      });
+      
+      it('updates the source file name if package changes name', function (done) {
+        Package.updateByIdOrName({
+          packageId: 'package',
+          userId: '123',
+          data: {
+            name: 'new-package'
+          }
+        }, function (err, saved, p) {
+          expect(p.files[0].name).to.equal('new-package.html');
+          done();
+        });
+      });
     });
     
-    describe('.updateFileContents(options, callback)', function () {
+    describe('.updateFileContents(options, callback)', function (done) {
+      var package;
       
+      beforeEach(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123',
+          files: [
+            {
+              name: 'file.html',
+              content: 'old content'
+            }
+          ]
+        });
+        
+        package.save(done);
+      });
+      
+      afterEach(function (done) {
+        package.remove(done);
+      });
+      
+      it('sets the contents of file for the given package', function (done) {
+        Package.updateFileContents({
+          packageId: 'package',
+          userId: '123',
+          filename: 'file.html',
+          content: 'new content'
+        }, function (err, saved, p) {
+          expect(p.files[0].content).to.equal('new content');
+          done();
+        });
+      });
     });
     
     describe('.isVersionUniqueAndGreatest(options, callback)', function () {
