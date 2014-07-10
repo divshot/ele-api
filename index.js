@@ -66,7 +66,20 @@ app.use(setUserIfToken({
   
   /*
     
-    app.use('/', route);
+    app.use('/', route({
+      Package: Package,
+      User: User,
+      Github: Github,
+      Version: Version
+    }));
+    
+    then the route file looks like:
+    
+    module.exports = function (imports) {
+      var router = express.Router();
+      
+      return router;
+    };
     
    */
   
