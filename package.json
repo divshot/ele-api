@@ -1,6 +1,6 @@
 {
   "name": "ele-api",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Node.js API for Ele.io",
   "main": "index.js",
   "scripts": {

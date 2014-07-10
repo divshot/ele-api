@@ -2,6 +2,10 @@ require('mockgoose')(require('mongoose'));
 
 var expect = require('chai').expect;
 var Package = require('../../lib/models/package');
+var Github = require('../../lib/models/github');
+var Mocksy = require('mocksy');
+var server = new Mocksy({port: 9876});
+var localhost = 'http://localhost:9876';
 
 describe('model: Package', function () {
   describe('new Package(data)', function () {
@@ -134,19 +138,211 @@ describe('model: Package', function () {
 
   describe('Package', function () {
     describe('.findForUserId(userId, callback)', function () {
+      var releasedAt;
       
+      before(function (done) {
+        releasedAt = new Date();
+          
+        var package1 = new Package({
+          name: 'package1',
+          user_id: '123',
+          versions: [
+            {
+              number: '0.2.0',
+              created_at: releasedAt
+            }
+          ]
+        });
+        
+        var package2 = new Package({
+          name: 'package2',
+          user_id: '123',
+          versions: [
+            {
+              number: '0.1.0',
+              created_at: releasedAt
+            }
+          ]
+        });
+        
+        package2.save(function () {
+          package1.save(done);
+        });
+      });
+      
+      after(function (done) {
+        Package.find({name: 'package1'}).remove(function () {
+          Package.find({name: 'package2'}).remove(done);
+        });
+      });
+      
+      it('finds all packages associated with a user id sorted by package name', function (done) {
+        Package.findForUserId('123', function (err, packages) {
+          expect(packages[0].name).to.equal('package1');
+          expect(packages).to.have.length(2);
+          expect(packages[0].released_at).to.eql(releasedAt);
+          done();
+        });
+      });
+      
+      it('returns packages formatted for a response', function (done) {
+        Package.findForUserId('123', function (err, packages) {
+          expect(packages[0].released_at).to.eql(releasedAt);
+          expect(Object.keys(packages[0])).to.eql([
+            'name',
+            'id',
+            'version',
+            'released_at'
+          ]);
+          done();
+        });
+      });
     });
     
     describe('.findByIdOrName(packageId, userId, callback, raw)', function () {
+      var package;
       
+      before(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123'
+        });
+        
+        package.save(done);
+      });
+      
+      after(function (done) {
+        package.remove(done);
+      });
+      
+      it('finds a package by package id', function (done) {
+        Package.findByIdOrName(package._id, '123', function (err, p) {
+          expect(p._id).to.equal(package._id);
+          done();
+        });
+      });
+      
+      it('finds a package by the package name', function (done) {
+        Package.findByIdOrName(package.name, '123', function (err, p) {
+          expect(p.name).equal(package.name);
+          done();
+        });
+      });
     });
     
     describe('.findFileContentsByPackageIdOrName(filename, packageId, userId, callback)', function () {
+      it('gets files contents for a given package', function (done) {
+        var package = new Package({
+          name: 'package',
+          user_id: '123',
+          files: [
+            {
+              name: 'file.html',
+              content: 'file content'
+            }
+          ]
+        });
+        
+        package.save(function () {
+          Package.findFileContentsByPackageIdOrName('file.html', 'package', '123', function (err, content) {
+            expect(content).to.equal('file content');
+            package.remove(done);
+          });
+        });
+      });
       
+      it('returns a "noPackage" error if package is not foudn', function (done) {
+        Package.findFileContentsByPackageIdOrName('file.html', 'no-package', '123', function (err, content) {
+          expect(err.noPackage).to.equal(true);
+          done();
+        });
+      });
     });
     
     describe('.findFileContentsFromVersion(options, callback)', function () {
+      var package;
+      var gh;
       
+      beforeEach(function (done) {
+        var sha = '123456';
+        gh = new Github('token');
+        
+        gh.getGistFileContentsForCommit = function (gistId, _sha, done) {
+          // Only works if sha matches sha in version number given
+          if (_sha === sha) done(null, {'file.html': {content:'file content'}});
+          else done();
+        };
+        
+        package = new Package({
+          name: 'package',
+          user_id: '123',
+          gist_id: '456',
+          versions: [
+            {
+              number: '0.2.0',
+              sha: sha
+            },
+            {
+              number: '0.1.0',
+              sha: '654321'
+            }
+          ],
+          files: [
+            {
+              name: 'file.html',
+              content: 'file content'
+            }
+          ]
+        });
+        
+        package.save(function () {
+          server.start(done);
+        });
+      });
+      
+      afterEach(function (done) {
+        package.remove(function () {
+          server.stop(done);
+        });
+      });
+      
+      it('gets the content for the the given version', function (done) {
+        Package.findFileContentsFromVersion({
+          filename: 'file.html',
+          packageId: 'package',
+          userId: '123',
+          number: '0.2.0',
+          _github: gh
+        }, function (err, content) {
+          expect(content).to.equal('file content');
+          done();
+        });
+      });
+      
+      it('gets the content for the "latest" version', function (done) {
+        Package.findFileContentsFromVersion({
+          filename: 'file.html',
+          packageId: 'package',
+          userId: '123',
+          number: 'latest',
+          _github: gh
+        }, function (err, content) {
+          expect(content).to.equal('file content');
+          done();
+        });
+      });
+      
+      it('gets the content for the "dev" version', function (done) {
+        Package.findFileContentsFromVersion({
+          filename: 'file.html',
+          packageId: 'package',
+          userId: '123',
+          number: 'dev'
+        }, function (err, content) {
+          expect(content).to.equal('file content');
+          done();
+        });
+      });
     });
     
     describe('.getVersion(options, callback)', function () {
