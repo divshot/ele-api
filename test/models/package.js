@@ -632,15 +632,110 @@ describe('model: Package', function () {
     });
     
     describe('.yankVersion(options, callback)', function () {
+      var package;
       
+      beforeEach(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123',
+          versions: [
+            {number: '0.1.0'}
+          ]
+        });
+        
+        package.save(done);
+      });
+      
+      afterEach(function (done) {
+        package.remove(done);
+      });
+      
+      it('makes a vesion as yanked', function (done) {
+        Package.yankVersion({
+          packageId: 'package',
+          userId: '123',
+          number: '0.1.0'
+        }, function (err, package) {
+          expect(package.versions[0].yanked).to.equal(true);
+          done();
+        });
+      });
+      
+      it('returns an already yanked error if version is already yanked', function (done) {
+        Package.yankVersion({
+          packageId: 'package',
+          userId: '123',
+          number: '0.1.0'
+        }, function (err, package) {
+          Package.yankVersion({
+            packageId: 'package',
+            userId: '123',
+            number: '0.1.0'
+          }, function (err) {
+            expect(err.alreadyYanked).to.equal(true);
+            done();
+          });
+        });
+      });
+      
+      it('returns a no package error package does not exist', function (done) {
+        Package.yankVersion({
+          packageId: 'package1',
+          userId: '123',
+          number: '0.1.0'
+        }, function (err, package) {
+          expect(err.noPackage).to.equal(true);
+          done();
+        });
+      });
     });
     
-    describe('.fielsFromObjectToArray(files)', function () {
+    describe('.filesFromObjectToArray(files)', function () {
+      it('formats package file list for db storage', function () {
+        var files = Package.filesFromObjectToArray({
+          'file.html': 'file content'
+        });
+        
+        expect(files).to.eql([
+          {
+            name: 'file.html',
+            content: 'file content'
+          }
+        ]);
+      });
       
+      it('returns file array if it is already formatted', function () {
+        var files = Package.filesFromObjectToArray([
+          {
+            name: 'file.html',
+            content: 'file content'
+          }
+        ]);
+        
+        expect(files).to.eql([
+          {
+            name: 'file.html',
+            content: 'file content'
+          }
+        ]);
+      });
     });
     
-    describe('.parseFileListForGist(files)', function () {
-      
+    describe('.parseFilelistForGist(files)', function () {
+      it('preps list of files for storing in Github gist', function () {
+        var files = Package.parseFilelistForGist([
+          {
+            name: 'file.html',
+            content: 'file content'
+          }
+        ]);
+        
+        expect(files).to.eql({
+          'file.html': {
+            content: 'file content'
+          }
+        });
+      });
     });
   });
 
