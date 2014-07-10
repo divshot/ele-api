@@ -514,11 +514,107 @@ describe('model: Package', function () {
     });
     
     describe('.isVersionUniqueAndGreatest(options, callback)', function () {
+      var package;
       
+      beforeEach(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123',
+          versions: [
+            {number: '0.1.0'},
+            {number: '0.2.0'}
+          ]
+        });
+        
+        package.save(done);
+      });
+      
+      afterEach(function (done) {
+        package.remove(done);
+      });
+      
+      it('tests if version number is unique for a package', function (done) {
+        Package.isVersionUniqueAndGreatest({
+          packageId: 'package',
+          userId: '123',
+          number: '0.3.0'
+        }, function (err, isUnique, isGreatest, p) {
+          expect(isUnique).to.equal(true);
+          expect(p).to.not.equal(undefined);
+          done();
+        });
+      });
+      
+      it('tests if version number is not unique for a package', function (done) {
+        Package.isVersionUniqueAndGreatest({
+          packageId: 'package',
+          userId: '123',
+          number: '0.2.0'
+        }, function (err, isUnique) {
+          expect(isUnique).to.equal(false);
+          done();
+        });
+      });
+      
+      it('tests if version number is the greatest out of all version of package', function (done) {
+        Package.isVersionUniqueAndGreatest({
+          packageId: 'package',
+          userId: '123',
+          number: '0.3.0'
+        }, function (err, isUnique, isGreatest) {
+          expect(isGreatest).to.equal(true);
+          done();
+        });
+      });
+      
+      it('tests if version number is not the greatest out of all version of package', function (done) {
+        Package.isVersionUniqueAndGreatest({
+          packageId: 'package',
+          userId: '123',
+          number: '0.0.1'
+        }, function (err, isUnique, isGreatest) {
+          expect(isGreatest).to.equal(false);
+          done();
+        });
+      });
     });
     
     describe('.isNameUnique(packageId, name, userId, callback)', function () {
+      var package;
       
+      beforeEach(function (done) {
+        package = new Package({
+          name: 'package',
+          user_id: '123'
+        });
+        
+        package.save(done);
+      });
+      
+      afterEach(function (done) {
+        package.remove(done);
+      });
+      
+      it('determines if name is unique within user packages', function (done) {
+        Package.isNameUnique(package._id, 'package1', '123', function (err, isUnique) {
+          expect(isUnique).to.equal(true);
+          done();
+        });
+      });
+      
+      it('it fails on non unique package name', function (done) {
+        var p = new Package({
+          name: 'package1',
+          user_id: '123'
+        });
+        
+        p.save(function () {
+          Package.isNameUnique(package._id, 'package1', '123', function (err, isUnique) {
+            expect(isUnique).to.equal(false);
+            p.remove(done);
+          });
+        });
+      });
     });
     
     describe('.nameToSlug(name)', function () {
