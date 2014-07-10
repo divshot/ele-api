@@ -615,10 +615,20 @@ describe('model: Package', function () {
           });
         });
       });
+      
+      it('successeds if name is the same as the current package name', function (done) {
+        Package.isNameUnique(package._id, 'package', '123', function (err, isUnique) {
+          expect(isUnique).to.equal(true);
+          done();
+        });
+      });
     });
     
     describe('.nameToSlug(name)', function () {
-      
+      it('converts name to slugified version', function () {
+        expect(Package.nameToSlug('My pAckage name!')).to.equal('my-package-name');
+        expect(Package.nameToSlug('My@@package.name')).to.equal('my-package-name');
+      });
     });
     
     describe('.yankVersion(options, callback)', function () {
